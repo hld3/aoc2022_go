@@ -24,20 +24,20 @@ func StartDay4() {
 }
 
 func convertToInts(nums []string) []int {
-    var res []int
-    for _, num := range nums {
-	n, err := strconv.Atoi(num) 
-	if err != nil {
-	    panic(err)
+	var res []int
+	for _, num := range nums {
+		n, err := strconv.Atoi(num)
+		if err != nil {
+			panic(err)
+		}
+		res = append(res, n)
 	}
-	res = append(res, n)
-    }
-    return res
+	return res
 }
 
 func rangeInRange(first []int, last []int) bool {
-	//TODO determine if one range is within the other.
-	return first[0] >= last[0] && first[1] <= last[1]
+	// return first[0] >= last[0] && first[1] <= last[1]
+	return (first[0] >= last[0] && first[0] <= last[1]) || (first[1] >= last[0] && first[1] <= last[1]) 
 }
 
 func readFile(name string) [][]string {

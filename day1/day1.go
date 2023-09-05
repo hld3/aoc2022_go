@@ -2,12 +2,13 @@ package day1
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"os"
 	"strconv"
 )
 
-func Start() int {
+func Start() {
 	fileInput, err := os.Open("day1/input.txt")
 	if err != nil {
 		log.Fatal(err)
@@ -34,7 +35,7 @@ func Start() int {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
-	return sumSlice(ans)
+	fmt.Println(sumSlice(ans))
 }
 
 func sumSlice(a []int) int {
