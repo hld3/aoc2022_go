@@ -1,9 +1,9 @@
 package main
 
 import (
-	"aoc2022/day3"
+	"aoc2022/day4"
 )
 
 func main() {
-	day3.StartDay3_conc()
+	day4.StartDay4()
 }
