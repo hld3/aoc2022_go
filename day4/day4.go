@@ -7,20 +7,49 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 )
 
-func StartDay4() {
-	ans := 0
-	lines := readFile("day4/input.txt")
-	for _, line := range lines {
-		rangeOne := convertToInts(strings.Split(line[0], "-"))
-		rangeTwo := convertToInts(strings.Split(line[1], "-"))
+var ans int
 
-		if rangeInRange(rangeOne, rangeTwo) || rangeInRange(rangeTwo, rangeOne) {
-			ans++
-		}
+func StartDay4() {
+	lines := readFile("day4/input.txt")
+
+	var wg sync.WaitGroup
+	calcChan := make(chan int, 5)
+
+	// Start Workers
+	for i := 0; i < 5; i++ {
+		wg.Add(1)
+		go workers(i, calcChan, &wg)
 	}
+
+	for _, line := range lines {
+		calcChan <- calculate(line)
+	}
+
+	close(calcChan)
+	wg.Wait()
+
 	fmt.Println(ans)
+}
+
+func workers(id int, calcChan chan int, wg *sync.WaitGroup) {
+	defer wg.Done()
+	for n := range calcChan {
+		// fmt.Printf("Worker %d received %d\n", id, n)
+		ans += n
+	}
+}
+
+func calculate(line []string) int {
+	rangeOne := convertToInts(strings.Split(line[0], "-"))
+	rangeTwo := convertToInts(strings.Split(line[1], "-"))
+
+	if rangeInRange(rangeOne, rangeTwo) || rangeInRange(rangeTwo, rangeOne) {
+		return 1
+	}
+	return 0
 }
 
 func convertToInts(nums []string) []int {
@@ -37,7 +66,7 @@ func convertToInts(nums []string) []int {
 
 func rangeInRange(first []int, last []int) bool {
 	// return first[0] >= last[0] && first[1] <= last[1]
-	return (first[0] >= last[0] && first[0] <= last[1]) || (first[1] >= last[0] && first[1] <= last[1]) 
+	return (first[0] >= last[0] && first[0] <= last[1]) || (first[1] >= last[0] && first[1] <= last[1])
 }
 
 func readFile(name string) [][]string {
