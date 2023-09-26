@@ -49,11 +49,7 @@ func retrieveMoves(rows [][]string, moves []string) {
 		// match zero index
 		fromRow := castToInt(split[3]) - 1
 		toRow := castToInt(split[5]) - 1
-		printBoxes(rows)
-		fmt.Println(move)
 		moveBoxes(moveCount, fromRow, toRow, rows)
-		printBoxes(rows)
-		fmt.Println()
 	}
 }
 
