@@ -18,6 +18,7 @@ func StartDay5() {
 
 	scanner := bufio.NewScanner(file)
 	boxes, boxMoves := readBoxesFromFile(file, scanner)
+
 	rowMap := createRowMap(boxes)
 	//do not send the last row with the row numbers
 	rowColumns := convertBoxRowsToColumns(boxes[:len(boxes)-1], rowMap)
@@ -48,7 +49,11 @@ func retrieveMoves(rows [][]string, moves []string) {
 		// match zero index
 		fromRow := castToInt(split[3]) - 1
 		toRow := castToInt(split[5]) - 1
+		printBoxes(rows)
+		fmt.Println(move)
 		moveBoxes(moveCount, fromRow, toRow, rows)
+		printBoxes(rows)
+		fmt.Println()
 	}
 }
 
@@ -59,17 +64,43 @@ func moveBoxes(count int, from int, to int, rows [][]string) {
 		remainingBoxes := rows[from][:rowLength-count]
 		boxesToMove := rows[from][rowLength-count:]
 		rows[from] = remainingBoxes
-		for i := len(boxesToMove) - 1; i >= 0; i-- {
-			rows[to] = append(rows[to], boxesToMove[i])
-		}
+		// for i := len(boxesToMove) - 1; i >= 0; i-- {
+		// 	rows[to] = append(rows[to], boxesToMove[i])
+		// }
+		rows[to] = moveBoxesOfSize(boxesToMove, rows[to], 3)
 	} else {
 		// Take all of the 'from' row and move it to the 'to' row
 		boxesToMove := rows[from]
 		rows[from] = []string{}
-		for i := len(boxesToMove) - 1; i >= 0; i-- {
-			rows[to] = append(rows[to], boxesToMove[i])
-		}
+		// for i := len(boxesToMove) - 1; i >= 0; i-- {
+		// 	rows[to] = append(rows[to], boxesToMove[i])
+		// }
+		rows[to] = moveBoxesOfSize(boxesToMove, rows[to], 3)
 	}
+}
+
+func printBoxes(boxes [][]string) {
+	for idx, row := range boxes {
+		fmt.Println(idx+1, row)
+	}
+}
+
+func moveBoxesOfSize(boxesToMove []string, rowToMoveTo []string, sizeOfMove int) []string {
+	// I thought that there was a limit to the number of boxes the crane could move at once.
+	// if len(boxesToMove) <= sizeOfMove {
+	//     rowToMoveTo = append(rowToMoveTo, boxesToMove...)
+	// } else {
+	//     for len(boxesToMove) >= sizeOfMove {
+	// 	currMove := boxesToMove[len(boxesToMove)-sizeOfMove:]
+	// 	boxesToMove = boxesToMove[:len(boxesToMove)-sizeOfMove]
+	// 	rowToMoveTo = append(rowToMoveTo, currMove...)
+	//     }
+	//     if len(boxesToMove) > 0 {
+	// 	rowToMoveTo = append(rowToMoveTo, boxesToMove...)
+	//     }
+	// }
+	rowToMoveTo = append(rowToMoveTo, boxesToMove...)
+	return rowToMoveTo
 }
 
 func castToInt(num string) int {
