@@ -25,7 +25,7 @@ func StartDay6() {
 func findMarkerIndex(packet string) int {
 	chars := []string{}
 	for idx, char := range packet {
-	    if len(chars) == 4 {
+	    if len(chars) == 14 {
 		if containsDupes(chars) {
 		    chars = chars[1:]
 		    chars = append(chars, string(char))
