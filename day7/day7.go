@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"log"
+	"math"
 	"os"
 	"strconv"
 
@@ -11,9 +12,15 @@ import (
 )
 
 type DirectoryData struct {
+	Name string
 	Id   int
 	Size int
 }
+
+const (
+	TOTAL_SPACE = 70000000
+	NEEDED_UPDATE_SPACE = 30000000
+)
 
 func StartDay7() {
 	file, err := os.Open("day7/input.txt")
@@ -35,15 +42,28 @@ func StartDay7() {
 	}
 
 	dirSize := retrieveDirSizes(lines)
-	ans := retrieveSizeToRemove(dirSize)
+	usedSpace := retrieveUsedSpace(dirSize)
+	freeSpace := TOTAL_SPACE - usedSpace
+	differenceNeeded := NEEDED_UPDATE_SPACE - freeSpace
+	ans := findMinValue(dirSize, differenceNeeded)
 	fmt.Println(ans)
 }
 
-func retrieveSizeToRemove(dirSize []DirectoryData) int {
+func findMinValue(dirSize []DirectoryData, max int) int {
+	min := math.MaxInt32
+	for _, dir := range dirSize {
+		if dir.Size < min && dir.Size > max {
+			min = dir.Size
+		}
+	}
+	return min
+}
+
+func retrieveUsedSpace(dirSize []DirectoryData) int {
 	res := 0
 	for _, dir := range dirSize {
-		if dir.Size <= 100000 {
-			res += dir.Size
+		if dir.Name == "/" {
+			res = dir.Size
 		}
 	}
 	return res
@@ -67,6 +87,7 @@ func retrieveDirSizes(lines []string) []DirectoryData {
 				dirTracking = dirTracking[:len(dirTracking)-1]
 			} else {
 				// when "cd" is not "..", add the directory to the list
+				dd.Name = lsplit[2]
 				dirTracking = append(dirTracking, dirId)
 				dirSize = append(dirSize, dd)
 				dirId++
